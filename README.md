@@ -23,6 +23,8 @@ A simple, modular file manager built with Flask, allowing you to upload, downloa
 
 Make a project directory, then clone the repo
 ```
+$ mkdir project-dir
+$ cd project-dir
 $ git clone https://github.com/jefmud/flask_file
 ```
 
@@ -90,9 +92,9 @@ flask_file/
         └── index.html
 ```
 
-__init__.py: Makes the flask_file directory a Python package and allows for easy importing.
+``__init__.py``: Makes the flask_file directory a Python package and allows for easy importing.
 
-flask_file.py: Contains the FlaskFile class that sets up the file manager.
+``flask_file.py``: Contains the FlaskFile class that sets up the file manager.
 
 Templates: HTML templates for rendering the file manager interface.
 
