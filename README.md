@@ -93,10 +93,6 @@ flask_file/
     flask_file.py: Contains the FlaskFile class that sets up the file manager.
     Templates: HTML templates for rendering the file manager interface.
 
-Screenshots
-
-(Include screenshots of the file manager interface if available.)
-
 ## Security Considerations
 
     Authentication: The module does not include user authentication. Do not deploy in a production environment without implementing proper authentication and authorization mechanisms.
