@@ -1,0 +1,16 @@
+<!-- flask_file/templates/flask_file/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title or "Flask File Manager" }}</title>
+    <!-- Include Bulma CSS from CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <!-- Include any additional scripts -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

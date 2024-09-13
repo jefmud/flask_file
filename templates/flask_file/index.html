@@ -1,0 +1,321 @@
+<!-- flask_file/templates/flask_file/index.html -->
+{% extends "flask_file/base.html" %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Flask File Manager</h1>
+        <div id="path" class="subtitle"></div>
+        <!-- New Folder Creation Form -->
+        <div class="field has-addons">
+            <div class="control">
+                <input class="input" type="text" id="new-folder-name" placeholder="New folder name">
+            </div>
+            <div class="control">
+                <button class="button is-link" id="create-folder-button">Create Folder</button>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Size</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="file-list">
+                    <!-- Files will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        <div id="upload-area" class="upload-area">
+            Drag and drop files here or click to upload.
+            <input type="file" id="file-input" multiple style="display: none;">
+        </div>
+    </div>
+</section>
+
+<!-- Properties Modal -->
+<div class="modal" id="properties-modal">
+    <div class="modal-background" onclick="closePropertiesModal()"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">File Properties</p>
+            <button class="delete" aria-label="close" onclick="closePropertiesModal()"></button>
+        </header>
+        <section class="modal-card-body">
+            <div id="properties-content">
+                <!-- Properties will be displayed here -->
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button" onclick="closePropertiesModal()">Close</button>
+        </footer>
+    </div>
+</div>
+
+<!-- Rename Modal -->
+<div class="modal" id="rename-modal">
+    <div class="modal-background" onclick="closeRenameModal()"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Rename File</p>
+            <button class="delete" aria-label="close" onclick="closeRenameModal()"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="field">
+                <label class="label">New Name</label>
+                <div class="control">
+                    <input class="input" type="text" id="rename-input" placeholder="Enter new name">
+                </div>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-link" onclick="renameFile()">Rename</button>
+            <button class="button" onclick="closeRenameModal()">Cancel</button>
+        </footer>
+    </div>
+</div>
+
+<style>
+    .upload-area {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        margin: 20px 0;
+        cursor: pointer;
+    }
+    .upload-area.dragover {
+        border-color: #000;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+    let currentDir = '';
+    let selectedFile = '';
+
+    function fetchFiles() {
+        fetch(`list?dir=${encodeURIComponent(currentDir)}`)
+            .then(response => response.json())
+            .then(data => renderFileList(data))
+            .catch(error => console.error('Error fetching files:', error));
+    }
+
+    function renderFileList(files) {
+        const fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+        if (currentDir) {
+            const upRow = document.createElement('tr');
+            upRow.innerHTML = `
+                <td><a href="#"><i class="fas fa-level-up-alt"></i> ..</a></td>
+                <td></td>
+                <td></td>
+            `;
+            upRow.onclick = () => {
+                currentDir = currentDir.split('/').slice(0, -1).join('/');
+                fetchFiles();
+            };
+            fileList.appendChild(upRow);
+        }
+        files.forEach(file => {
+            const row = document.createElement('tr');
+            let size = file.size !== null ? `${file.size} bytes` : '';
+            if (file.is_dir) {
+                row.innerHTML = `
+                    <td><a href="#" class="directory"><i class="fas fa-folder"></i> ${file.name}</a></td>
+                    <td></td>
+                    <td>
+                        <button class="button is-small is-info" onclick="showProperties('${file.name}', true)">Properties</button>
+                        <button class="button is-small is-warning" onclick="openRenameModal('${file.name}', true)">Rename</button>
+                        <button class="button is-small is-danger" onclick="deleteFile('${file.name}', true)">Delete</button>
+                    </td>
+                `;
+                row.querySelector('.directory').onclick = (e) => {
+                    e.preventDefault();
+                    currentDir = currentDir ? `${currentDir}/${file.name}` : file.name;
+                    fetchFiles();
+                };
+            } else {
+                row.innerHTML = `
+                    <td><span><i class="fas fa-file"></i> ${file.name}</span></td>
+                    <td>${size}</td>
+                    <td>
+                        <button class="button is-small is-success" onclick="downloadFile('${file.name}')">Download</button>
+                        <button class="button is-small is-info" onclick="showProperties('${file.name}', false)">Properties</button>
+                        <button class="button is-small is-warning" onclick="openRenameModal('${file.name}', false)">Rename</button>
+                        <button class="button is-small is-danger" onclick="deleteFile('${file.name}', false)">Delete</button>
+                    </td>
+                `;
+            }
+            fileList.appendChild(row);
+        });
+        document.getElementById('path').innerText = `Current directory: /${currentDir}`;
+    }
+
+    function uploadFiles(files) {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files[]', file);
+        }
+        formData.append('dir', currentDir);
+        fetch('upload', { method: 'POST', body: formData })
+            .then(() => fetchFiles())
+            .catch(error => console.error('Error uploading files:', error));
+    }
+
+    function downloadFile(filename) {
+        window.location.href = `download?file=${encodeURIComponent(currentDir + '/' + filename)}`;
+    }
+
+    function deleteFile(filename, isDir) {
+        if (confirm('Are you sure you want to delete this ' + (isDir ? 'folder' : 'file') + '?')) {
+            fetch('delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `path=${encodeURIComponent(currentDir + '/' + filename)}`
+            }).then(() => fetchFiles())
+            .catch(error => console.error('Error deleting file:', error));
+        }
+    }
+
+    function createFolder() {
+        const folderName = document.getElementById('new-folder-name').value.trim();
+        if (!folderName) {
+            alert('Please enter a folder name.');
+            return;
+        }
+        const formData = new URLSearchParams();
+        formData.append('dir_path', currentDir);
+        formData.append('dir_name', folderName);
+        fetch('mkdir', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('new-folder-name').value = '';
+                fetchFiles();
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error creating folder:', error);
+            alert('An error occurred while creating the folder.');
+        });
+    }
+
+    document.getElementById('create-folder-button').addEventListener('click', createFolder);
+
+    document.getElementById('upload-area').addEventListener('click', () => {
+        document.getElementById('file-input').click();
+    });
+
+    document.getElementById('file-input').addEventListener('change', event => {
+        uploadFiles(event.target.files);
+    });
+
+    document.getElementById('upload-area').addEventListener('dragover', event => {
+        event.preventDefault();
+        event.currentTarget.classList.add('dragover');
+    });
+
+    document.getElementById('upload-area').addEventListener('dragleave', event => {
+        event.preventDefault();
+        event.currentTarget.classList.remove('dragover');
+    });
+
+    document.getElementById('upload-area').addEventListener('drop', event => {
+        event.preventDefault();
+        event.currentTarget.classList.remove('dragover');
+        uploadFiles(event.dataTransfer.files);
+    });
+
+    // Properties Modal Functions
+    function showProperties(filename, isDir) {
+        selectedFile = filename;
+        const formData = new URLSearchParams();
+        formData.append('path', currentDir + '/' + filename);
+        fetch('properties', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const contentDiv = document.getElementById('properties-content');
+                contentDiv.innerHTML = `
+                    <p><strong>Name:</strong> ${data.name}</p>
+                    <p><strong>Path:</strong> ${data.path}</p>
+                    <p><strong>Size:</strong> ${data.size} bytes</p>
+                `;
+                if (data.is_image) {
+                    contentDiv.innerHTML += `<p><img src="${data.url}" alt="${data.name}" style="max-width: 100%;"></p>`;
+                }
+                document.getElementById('properties-modal').classList.add('is-active');
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching properties:', error);
+            alert('An error occurred while fetching file properties.');
+        });
+    }
+
+    function closePropertiesModal() {
+        document.getElementById('properties-modal').classList.remove('is-active');
+    }
+
+    // Rename Modal Functions
+    function openRenameModal(filename, isDir) {
+        selectedFile = filename;
+        document.getElementById('rename-input').value = filename;
+        document.getElementById('rename-modal').classList.add('is-active');
+    }
+
+    function closeRenameModal() {
+        document.getElementById('rename-modal').classList.remove('is-active');
+    }
+
+    function renameFile() {
+        const newName = document.getElementById('rename-input').value.trim();
+        if (!newName) {
+            alert('Please enter a new name.');
+            return;
+        }
+        const formData = new URLSearchParams();
+        formData.append('old_path', currentDir + '/' + selectedFile);
+        formData.append('new_name', newName);
+        fetch('rename', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeRenameModal();
+                fetchFiles();
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error renaming file:', error);
+            alert('An error occurred while renaming the file.');
+        });
+    }
+
+    fetchFiles();
+</script>
+{% endblock %}
