@@ -73,6 +73,7 @@ if __name__ == '__main__':
 ```
 $ python main.py
 ```
+
 ### Access the File Manager
 
 Open your web browser and navigate to http://localhost:5000/filemanager/.
@@ -89,17 +90,23 @@ flask_file/
         └── index.html
 ```
 
-    __init__.py: Makes the flask_file directory a Python package and allows for easy importing.
-    flask_file.py: Contains the FlaskFile class that sets up the file manager.
-    Templates: HTML templates for rendering the file manager interface.
+__init__.py: Makes the flask_file directory a Python package and allows for easy importing.
+
+flask_file.py: Contains the FlaskFile class that sets up the file manager.
+
+Templates: HTML templates for rendering the file manager interface.
 
 ## Security Considerations
 
-    Authentication: The module does not include user authentication. Do not deploy in a production environment without implementing proper authentication and authorization mechanisms.
-    You can use your own authentication and integrate it to the FlaskFile object.
-    File Sanitization: Uses secure_filename from werkzeug.utils to sanitize file and folder names.
-    Path Security: Ensures that all file operations are confined within the specified root directory to prevent directory traversal attacks.
-    Serving Files: Files are served securely using Flask's send_from_directory function.
+Authentication: The module does not include user authentication. Do not deploy in a production environment without implementing proper authentication and authorization mechanisms.
+    
+You can use your own authentication and integrate it to the FlaskFile object and assign the `is_authenticated` to a function that returns True if authenticated, or False if not.
+
+File Sanitization: Uses `secure_filename` from werkzeug.utils to sanitize file and folder names.
+
+Path Security: Ensures that all file operations are confined within the specified root directory to prevent directory traversal attacks.
+
+Serving Files: Files are served securely using Flask's `send_from_directory` function.
 
 ## Customization
 
