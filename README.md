@@ -103,16 +103,21 @@ flask_file/
 
 ## Customization
 
-    Styling: The interface uses Bulma CSS and Font Awesome icons. You can customize the styles by modifying the templates or overriding the CSS.
-    Templates: The HTML templates are located in templates/flask_file/. Feel free to modify them to suit your needs.
-    URL Base and File Root: Adjust the url_base and file_root parameters when initializing FlaskFile to change where the file manager is accessible and where files are stored.
+Styling: The interface uses Bulma CSS and Font Awesome icons. You can customize the styles by modifying the templates or overriding the CSS.
+
+Templates: The HTML templates are located in templates/flask_file/. Feel free to modify them to suit your needs.
+
+URL Base and File Root: Adjust the url_base and file_root parameters when initializing FlaskFile to change where the file manager is accessible and where files are stored.
 
 ## Dependencies
 
-    Flask: Web framework used for the application.
-    Werkzeug: Utility library used for secure filename handling (included with Flask).
-    Bulma CSS: For styling the user interface (included via CDN).
-    Font Awesome: For icons in the user interface (included via CDN).
+Flask: Web framework used for the application.
+
+Werkzeug: Utility library used for secure filename handling (included with Flask).
+
+Bulma CSS: For styling the user interface (included via CDN).
+
+Font Awesome: For icons in the user interface (included via CDN).
 
 ## Contributing
 
@@ -146,6 +151,7 @@ Implement your feature or bug fix.
 $ git add .
 $ git commit -m "Add your commit message here"
 $ git push origin feature/your-feature-name
+```
 
 ### Create a Pull Request
 
