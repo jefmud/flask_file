@@ -19,39 +19,37 @@ A simple, modular file manager built with Flask, allowing you to upload, downloa
     Security: Path sanitization to prevent directory traversal attacks. Files are managed within a specified root directory.
 ```
 
-Installation
-
-    Clone the Repository
-
-    bash
+## Installation
 
 Make a project directory, then clone the repo
-
+```
 $ git clone https://github.com/jefmud/flask_file
+```
 
-Create a Virtual Environment (Optional)
+### Create a Virtual Environment (Optional)
 
-bash
-
+```
 $ python3 -m venv venv
 $ source venv/bin/activate
+```
 
-Install Dependencies
+### Install Dependencies
 
-bash
+```
+$ pip install Flask
+```
 
-    $ pip install Flask
+Ensure you have Flask installed. The module also uses werkzeug and Jinja2 which comes with Flask.
 
-        Ensure you have Flask installed. The module also uses werkzeug which comes with Flask.
+## Usage
 
-Usage
 Integrate into Your Flask App
 
-    Copy the flask_file Module
+1. Copy the flask_file Module
 
-    Copy the flask_file directory into your project.
+2. Copy the flask_file directory into your project.
 
-    Initialize in Your Flask Application
+3. Initialize in Your Flask Application
 
     
 ```python
@@ -70,15 +68,14 @@ if __name__ == '__main__':
         url_base: The base URL where the file manager will be accessible (default is /filemanager).
         file_root: The root directory for file operations (default is /static/uploads).
 
-Run the Application
+## Run the Application
 
-bash
+```
+$ python main.py
+```
+### Access the File Manager
 
-    $ python main.py
-
-    Access the File Manager
-
-    Open your web browser and navigate to http://localhost:5000/filemanager/.
+Open your web browser and navigate to http://localhost:5000/filemanager/.
 
 ## Directory Structure
 
@@ -99,6 +96,7 @@ flask_file/
 ## Security Considerations
 
     Authentication: The module does not include user authentication. Do not deploy in a production environment without implementing proper authentication and authorization mechanisms.
+    You can use your own authentication and integrate it to the FlaskFile object.
     File Sanitization: Uses secure_filename from werkzeug.utils to sanitize file and folder names.
     Path Security: Ensures that all file operations are confined within the specified root directory to prevent directory traversal attacks.
     Serving Files: Files are served securely using Flask's send_from_directory function.
@@ -120,48 +118,50 @@ flask_file/
 
 Contributions are welcome! Please follow these steps:
 
-    Fork the Repository
+1. Fork the Repository
 
-    Click the "Fork" button at the top-right corner of this page to create a copy of the repository under your GitHub account.
+2. Click the "Fork" button at the top-right corner of this page to create a copy of the repository under your GitHub account.
 
-    Clone Your Fork
+3. Clone Your Fork
 
-    bash
 
+```
 $ git clone https://github.com/jefmud/flask_file
 $ cd flask-file-manager
+```
 
 ### Create a Feature Branch
 
-bash
-
+```
 $ git checkout -b feature/your-feature-name
+```
 
 ### Make Changes
 
 Implement your feature or bug fix.
 
-Commit and Push
+### Commit and Push
 
-bash
+```
+$ git add .
+$ git commit -m "Add your commit message here"
+$ git push origin feature/your-feature-name
 
-    git add .
-    git commit -m "Add your commit message here"
-    git push origin feature/your-feature-name
+### Create a Pull Request
 
-    Create a Pull Request
+Go to the original repository on GitHub and create a pull request from your fork.
 
-    Go to the original repository on GitHub and create a pull request from your fork.
-
-License
+## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 Acknowledgments
 
-    Flask: Flask is a lightweight WSGI web application framework.
-    Bulma CSS: Bulma is a modern CSS framework based on Flexbox.
-    Font Awesome: Font Awesome provides vector icons and social logos.
+Flask: Flask is a lightweight WSGI web application framework.
 
-Contact
+Bulma CSS: Bulma is a modern CSS framework based on Flexbox.
+
+Font Awesome: Font Awesome provides vector icons and social logos.
+
+## Contact
 
 For any questions or suggestions, please open an issue on GitHub or contact me at github
