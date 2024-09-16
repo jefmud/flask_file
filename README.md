@@ -47,9 +47,9 @@ Ensure you have Flask installed. The module also uses werkzeug and Jinja2 which 
 
 Integrate into Your Flask App
 
-1. Copy the flask_file Module
+1. Clone the flask_file hierarchy into your project directory
 
-2. Copy the flask_file directory into your project.
+2. Review the complete directory structure (shown below)
 
 3. Initialize in Your Flask Application
 
