@@ -1,7 +1,9 @@
 # flask_file
 Flask File Manager
 
-A simple, modular file manager built with Flask, allowing you to upload, download, rename, delete, and manage files and directories within a web interface. It supports drag-and-drop uploads, displays file properties, and provides a user-friendly interface styled with Bulma CSS.
+A simple, modular file manager built with Flask, allows you to upload, download, rename, delete, and manage files and directories within a web interface. It supports drag-and-drop uploads, displays file properties, and provides a user-friendly interface styled with Bulma CSS.  If you use this, you utilize a third-party login manager, and experienced users can choose to roll their own.
+
+**Disclaimer: Improper use of this module without a security mechanism is severely discouraged.**
 
 
 ## Features
@@ -52,6 +54,8 @@ Integrate into Your Flask App
 2. Review the complete directory structure (shown below)
 
 3. Initialize in Your Flask Application
+
+4. You must add security mechanism like FlaskLogin to your project for deployment.
 
     
 ```python
