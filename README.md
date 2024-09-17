@@ -108,6 +108,18 @@ Authentication: The module does not include user authentication. Do not deploy i
     
 You can use your own authentication and integrate it to the FlaskFile object and assign the `is_authenticated` to a function that returns True if authenticated, or False if not.
 
+### Flask Login usage
+
+If you are using `flask_login` as your security mechanism, you would create a function using Flask Login's `current_user.is_authenticated` boolean flag.  Similar to this:
+
+```
+def is_authenticated():
+    return current_user.is_authenticated
+
+from flask_file import FlaskFile
+file_manager = FlaskFile(app, url_base='/filemanager', file_root='/static/uploads', is_authenticated=is_authenticated)
+```
+
 File Sanitization: Uses `secure_filename` from werkzeug.utils to sanitize file and folder names.
 
 Path Security: Ensures that all file operations are confined within the specified root directory to prevent directory traversal attacks.
